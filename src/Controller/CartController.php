@@ -20,18 +20,20 @@ class CartController extends AbstractController
     }
 
     #[Route(path:"/cart", name:"view_cart")]
-    public function viewCart(Request $request): Response
-    {
+    public function viewCart(Request $request): Response {
+        // Получаем уникальный идентификатор сессии
         $sessionId = $request->getSession()->getId();
+
+        // Извлекаем корзину для данного пользователя (по session_id)
         $cartItems = $this->em->getRepository(Order::class)->findBy(['order_id' => $sessionId]);
-        $flowers = [];
-        foreach ($cartItems as $item) {
-            $flower = $this->em->getRepository(Flower::class)->find($item->getFlowerId());
-            $flowers[$item->getId()] = $flower; 
-        }
+
+        // Получаем все цветы для отображения
+        $flowers = $this->em->getRepository(Flower::class)->findAll();
+        
+        // Передаем корзину и цветы в шаблон
         return $this->render('cart.html.twig', [
             'cartItems' => $cartItems,
-            'flowers' => $flowers, 
+            'flowers' => $flowers
         ]);
     }
 
@@ -80,5 +82,13 @@ class CartController extends AbstractController
 
         // Перенаправляем обратно на страницу корзины
         return $this->redirectToRoute('view_cart');
+    }
+
+    #[Route(path:"/checkout", name:"checkout")]
+    public function checkout()
+    {
+        // Логика для оформления заказа
+
+        return new Response('Success');
     }
 }

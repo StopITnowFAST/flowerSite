@@ -26,5 +26,10 @@
     <footer>
         <p>&copy; 2024 My Flower Shop</p>
     </footer>
+
+    {% block javascripts %}
+        <script src="{{ asset('js/popup.js') }}"></script>
+        <script src="{{ asset('js/cart.js') }}"></script>
+    {% endblock %}
 </body>
 </html>
