@@ -24,6 +24,33 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // Удаление товара из корзины
+    document.querySelectorAll('.remove-item-btn').forEach(button => {
+        button.addEventListener('click', function () {
+            const flowerId = this.dataset.id;
+
+            // Удаляем строку из таблицы
+            const row = document.querySelector(`tr[data-flower-id="${flowerId}"]`);
+            if (row) {
+                row.remove();
+            }
+
+            // Обновляем общий итог
+            updateGrandTotal();
+
+            // Можно отправить запрос на сервер для удаления из БД
+            fetch(`/cart/remove/${flowerId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ flowerId }),
+            }).catch(error => {
+                console.error('Error removing item:', error);
+            });
+        });
+    });
+
     // Инициализация начального значения общего итога
     updateGrandTotal();
 });

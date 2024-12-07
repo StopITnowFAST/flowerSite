@@ -15,6 +15,7 @@
                 <th>Price</th>
                 <th>Quantity</th>
                 <th>Total</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -33,6 +34,9 @@
                             data-id="{{ flower.id }}">
                     </td>
                     <td class="total">{{ (item.amount * flower.price)|number_format(2) }}</td>
+                    <td>
+                        <button class="remove-item-btn" data-id="{{ flower.id }}">Remove</button>
+                    </td>
                 </tr>
             {% endfor %}
         </tbody>
