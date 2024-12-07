@@ -1,3 +1,16 @@
+.btn-small {
+    width: 50% !important;
+    padding: 3px 5px !important;
+    font-size: 12px;
+    line-height: 1 !important;
+    border-radius: 4px !important;
+}
+
+.btn-small i {
+    margin: 0;
+}
+
+
 body {
     background-color: #f7e6ec; /* Очень светлый розовый фон */
     color: #333; /* Темный цвет текста для контраста */
@@ -390,7 +403,7 @@ form#checkoutForm {
 }
 
 table {
-    width: 80%;
+    width: 90%;
     border-collapse: collapse;
     margin-bottom: 20px;
 }
@@ -497,4 +510,25 @@ p[style="color: red;"] {
         width: auto;
     }
 }
+
+.alert {
+    padding: 15px;
+    margin: 15px 0;
+    border: 1px solid transparent;
+    border-radius: 4px;
+}
+
+.alert-success {
+    width: 100%;
+    color: #155724;
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+}
+
+.alert-error {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+}
+
 

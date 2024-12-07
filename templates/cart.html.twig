@@ -34,7 +34,8 @@
                                     min="1" 
                                     max="{{ storage.amount }}" 
                                     data-price="{{ flower.price }}" 
-                                    data-id="{{ flower.id }}">
+                                    data-id="{{ flower.id }}"
+                                    required>
                                 <input type="hidden" name="items[{{ loop.index0 }}][flower_id]" value="{{ flower.id }}">
                                 <p>Доступно: {{ storage.amount }}</p>
                             {% else %}
@@ -55,10 +56,24 @@
             </tbody>
         </table>
         <div>
-            <strong>Итого: ₽<span id="grandTotal">0.00</span></strong>
+            <strong style="font-size: 1.5em;">Итого: ₽<span id="grandTotal">0.00</span></strong>
         </div>
+
+        <!-- Поле ввода номера телефона -->
+        <div>
+            <label for="phone_number">Номер телефона:</label>
+            <input 
+                type="text" 
+                id="phone_number" 
+                name="phone_number" 
+                class="form-control" 
+                placeholder="Введите номер телефона" 
+                required>
+        </div>
+
         <button type="submit" class="btn btn-primary">Оформить заказ</button>
     </form>
+
 {% endif %}
 
 <a href="{{ path('catalog') }}" class="btn btn-secondary">Вернуться в каталог</a>

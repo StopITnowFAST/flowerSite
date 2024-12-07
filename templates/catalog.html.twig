@@ -3,6 +3,15 @@
 {% block title %}Каталог{% endblock %}
 
 {% block body %}
+
+{% for label, messages in app.flashes %}
+    <div class="alert alert-{{ label }}">
+        {% for message in messages %}
+            {{ message }}
+        {% endfor %}
+    </div>
+{% endfor %}
+
 <h1>Каталог</h1>
 
 <div class="catalog">

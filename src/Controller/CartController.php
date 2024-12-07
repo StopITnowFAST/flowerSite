@@ -84,32 +84,32 @@ class CartController extends AbstractController
     {
         $cartId = strtoupper($request->request->get('cart_id'));
         $items = $request->request->all()['items'];
-
+        $number = $request->request->get('phone_number');
+    
         if (!$items) {
             return new Response('No items in cart', 400);
         }
-
+    
         foreach ($items as $item) {
             $flowerId = $item['flower_id'];
             $amount = $item['amount'];
-
+    
             $order = new Order;
-
+    
             $order->setOrderId($cartId);
             $order->setFlowerId($flowerId);
             $order->setAmount($amount);
+            $order->setPhoneNumber($number);
             $order->setStatus(1);
-
-            $assortment = $this->em->getRepository(Storage::class)->findOneBy(['flower_id' => $flowerId]);
-            $value = $assortment->getAmount();
-            $assortment->setAmount($value - $amount);
-            $this->em->persist($assortment);
-            $this->em->flush();
-
+    
             $this->em->persist($order);
             $this->em->flush();
         }
-
-        return new Response('Checkout successful!');
+    
+        // Устанавливаем флеш-сообщение
+        $this->addFlash('success', 'Ваш заказ успешно оформлен!');
+    
+        return $this->redirectToRoute('catalog');
     }
+    
 }

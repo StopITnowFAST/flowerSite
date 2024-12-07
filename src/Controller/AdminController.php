@@ -169,4 +169,39 @@ class AdminController extends AbstractController {
 
         return $this->redirectToRoute('flower_list');
     }
+
+    #[Route(path:"/orders/{id}/status/{status}", name:"update_order_status")]
+    public function updateStatus(int $id, int $status): Response
+    {
+        $order = $this->em->getRepository(Order::class)->find($id);
+
+        if (!$order) {
+            throw $this->createNotFoundException('Order not found');
+        }
+
+        $order->setStatus($status);
+        $this->em->flush();
+
+        $this->addFlash('success', 'Статус заказа успешно обновлен.');
+
+        return $this->redirectToRoute('order_list');
+    }
+
+    #[Route(path:"/order/delete/{id}", name:"delete_order")]
+    public function deleteOrder(int $id): Response
+    {
+        $order = $this->em->getRepository(Order::class)->find($id);
+
+        if ($order) {
+            $this->em->remove($order);
+            $this->em->flush();
+            $this->addFlash('success', 'Заказ успешно удалён.');
+        } else {
+            $this->addFlash('error', 'Заказ не найден.');
+        }
+
+        return $this->redirectToRoute('order_list');
+    }
+
+
 }

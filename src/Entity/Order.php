@@ -24,6 +24,9 @@ class Order
     #[ORM\Column]
     private ?int $amount = null;
 
+    #[ORM\Column(length: 255)]
+    private ?string $phone_number = null;
+
     #[ORM\Column]
     private ?int $status = null;
 
@@ -70,6 +73,18 @@ class Order
     public function setAmount(int $amount): static
     {
         $this->amount = $amount;
+
+        return $this;
+    }
+
+    public function getPhoneNumber(): ?string
+    {
+        return $this->phone_number;
+    }
+
+    public function setPhoneNumber(string $phone_number): static
+    {
+        $this->phone_number = $phone_number;
 
         return $this;
     }

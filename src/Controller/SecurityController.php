@@ -13,7 +13,7 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\HttpFoundation\Request;
 
 class SecurityController extends AbstractController {
-    #[Route('/register', name: 'app_register')]
+    #[Route('/admin/register', name: 'admin_register')]
     public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager): Response
     {
         $user = new User();
@@ -36,7 +36,7 @@ class SecurityController extends AbstractController {
 
             // do anything else you need here, like send an email
 
-            return $this->redirectToRoute('app_admin_flowers');
+            return $this->redirectToRoute('catalog');
         }
 
         return $this->render('security/register.html.twig', [
