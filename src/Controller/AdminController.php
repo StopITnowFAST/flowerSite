@@ -36,6 +36,7 @@ class AdminController extends AbstractController {
     // Страница с цветами
     #[Route(path: '/admin/flower', name: 'flower_list')] 
     function flowers(Request $request, SluggerInterface $slugger) {
+        dump($request->getSession()->getId());
         $flowers = $this->em->getRepository(Flower::class)->findAll();
 
         $flower = new Flower();
@@ -97,7 +98,8 @@ class AdminController extends AbstractController {
 
     // Страница просмотра заказов
     #[Route(path: '/admin/orders', name: 'order_list')] 
-    function orders() {
+    function orders(Request $request) {
+        dump($request->getSession()->getId());
         $orders = $this->em->getRepository(Order::class)->findAll();
         $flowers = $this->em->getRepository(Flower::class)->findAll();
         $flowerNames = [];
@@ -114,7 +116,7 @@ class AdminController extends AbstractController {
     // Страница редактирования склада
     #[Route(path: '/admin/storage', name: 'storage_list')] 
     function storage(Request $request) {
-
+        dump($request->getSession()->getId());
         // Добавление записи
         $assortment = new Storage();
         $form = $this->createForm(StorageFormType::class, $assortment);

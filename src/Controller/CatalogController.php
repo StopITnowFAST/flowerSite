@@ -31,13 +31,15 @@ class CatalogController extends AbstractController {
     }
 
     // Страница с цветами
-    #[Route(path: '/catalog', name: 'catalog')]
-    function catalog()
+    #[Route(path: '/', name: 'catalog')]
+    function catalog(Request $request)
     {
+        dump($request->getSession()->getId());   
+        
         // В контроллере
         $flowers = $this->em->getRepository(Flower::class)->findAll();
         foreach ($flowers as $flower) {
-            $file = $this->em->getRepository(File::class)->find($flower->getFileId()); // предполагается, что у вас есть метод getFile(), который возвращает объект File
+            $file = $this->em->getRepository    (File::class)->find($flower->getFileId()); // предполагается, что у вас есть метод getFile(), который возвращает объект File
             if ($file) {
                 $flower->imagePath = 'images/' . $file->getName(); // Путь к изображению
             }

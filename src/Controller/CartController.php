@@ -23,44 +23,44 @@ class CartController extends AbstractController
 
     #[Route(path:"/cart", name:"view_cart")]
     function cart(Request $request, EntityManagerInterface $em): Response
-{
-    $sessionId = $request->getSession()->getId();
+    {
+        dump($request->getSession()->getId());   
+        // Получение корзины пользователя
+        $cartItems = $em->getRepository(Cart::class)->findBy(['cart_id' => $request->getSession()->getId()]);
 
-    // Получение корзины пользователя
-    $cartItems = $em->getRepository(Cart::class)->findBy(['cart_id' => $sessionId]);
+        // Получение всех цветов
+        $flowerRepo = $em->getRepository(Flower::class);
+        $flowers = $flowerRepo->findAll();
 
-    // Получение всех цветов
-    $flowerRepo = $em->getRepository(Flower::class);
-    $flowers = $flowerRepo->findAll();
+        // Индексация цветов по ID
+        $flowersById = [];
+        foreach ($flowers as $flower) {
+            $flowersById[$flower->getId()] = $flower;
+        }
 
-    // Индексация цветов по ID
-    $flowersById = [];
-    foreach ($flowers as $flower) {
-        $flowersById[$flower->getId()] = $flower;
+        // Получение доступного количества на складе
+        $storageRepo = $em->getRepository(Storage::class);
+        $storages = $storageRepo->findAll();
+
+        // Индексация записи склада по flower_id
+        $storagesByFlowerId = [];
+        foreach ($storages as $storage) {
+            $storagesByFlowerId[$storage->getFlowerId()] = $storage;
+        }
+
+        return $this->render('cart.html.twig', [
+            'cartItems' => $cartItems,
+            'flowers' => $flowersById,
+            'storages' => $storagesByFlowerId,
+            'cartId' => $request->getSession()->getId(),
+        ]);
     }
-
-    // Получение доступного количества на складе
-    $storageRepo = $em->getRepository(Storage::class);
-    $storages = $storageRepo->findAll();
-
-    // Индексация записи склада по flower_id
-    $storagesByFlowerId = [];
-    foreach ($storages as $storage) {
-        $storagesByFlowerId[$storage->getFlowerId()] = $storage;
-    }
-
-    return $this->render('cart.html.twig', [
-        'cartItems' => $cartItems,
-        'flowers' => $flowersById,
-        'storages' => $storagesByFlowerId,
-        'cartId' => $sessionId,
-    ]);
-}
 
 
     #[Route(path:"/add_to_cart/{id}", name:"add_to_cart")]
     public function addToCart($id, Request $request): RedirectResponse
     {
+        dump($request->getSession()->getId());   
         $flower = $this->em->getRepository(Flower::class)->find($id);
 
         if ($flower) {
@@ -101,6 +101,12 @@ class CartController extends AbstractController
             $order->setFlowerId($flowerId);
             $order->setAmount($amount);
             $order->setStatus(1);
+
+            $assortment = $this->em->getRepository(Storage::class)->findOneBy(['flower_id' => $flowerId]);
+            $value = $assortment->getAmount();
+            $assortment->setAmount($value - $amount);
+            $this->em->persist($assortment);
+            $this->em->flush();
 
             $this->em->persist($order);
             $this->em->flush();
