@@ -5,10 +5,12 @@
 
 {# Отображение формы добавления цветков #}
 <h2>Add New Flower</h2>
-{{ form_start(form) }}
-    {{ form_row(form.name) }}
-    {{ form_row(form.description) }}    
-{{ form_end(form) }}
+    {{ form_start(form) }}
+        {{ form_row(form.name) }}
+        {{ form_row(form.description) }}
+        {{ form_row(form.image) }}
+        <button class="btn">Save</button>
+    {{ form_end(form) }}
 
 <hr>
 

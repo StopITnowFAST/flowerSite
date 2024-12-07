@@ -21,9 +21,6 @@ class File
     private ?string $extension = null;
 
     #[ORM\Column]
-    private ?int $size = null;
-
-    #[ORM\Column]
     private ?int $status = null;
 
     #[ORM\Column]
@@ -57,18 +54,6 @@ class File
     public function setExtension(string $extension): static
     {
         $this->extension = $extension;
-
-        return $this;
-    }
-
-    public function getSize(): ?int
-    {
-        return $this->size;
-    }
-
-    public function setSize(int $size): static
-    {
-        $this->size = $size;
 
         return $this;
     }

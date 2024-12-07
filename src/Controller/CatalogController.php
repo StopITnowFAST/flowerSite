@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Flower;
-use App\Entity\Order;
+use App\Entity\File;
 use App\Entity\Storage;
 use App\Form\FlowerFormType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -31,10 +31,19 @@ class CatalogController extends AbstractController {
     }
 
     // Страница с цветами
-    #[Route(path: '/catalog', name: 'catalog')] 
-    function catalog() {
+    #[Route(path: '/catalog', name: 'catalog')]
+    function catalog()
+    {
+        // В контроллере
         $flowers = $this->em->getRepository(Flower::class)->findAll();
+        foreach ($flowers as $flower) {
+            $file = $this->em->getRepository(File::class)->find($flower->getFileId()); // предполагается, что у вас есть метод getFile(), который возвращает объект File
+            if ($file) {
+                $flower->imagePath = 'images/' . $file->getName(); // Путь к изображению
+            }
+        }
 
+        // Передаем в шаблон
         return $this->render('catalog.html.twig', [
             'flowers' => $flowers,
         ]);

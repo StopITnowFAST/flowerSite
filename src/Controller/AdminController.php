@@ -7,15 +7,17 @@ use App\Entity\Order;
 use App\Entity\Storage;
 use App\Form\FlowerFormType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use App\Entity\User;
+use App\Entity\File;
 use App\Form\StorageFormType;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\String\Slugger\SluggerInterface;
 use Psr\Log\LoggerInterface;
 
 class AdminController extends AbstractController {
@@ -32,7 +34,7 @@ class AdminController extends AbstractController {
 
     // Страница с цветами
     #[Route(path: '/admin/flower', name: 'flower_list')] 
-    function flowers(Request $request) {
+    function flowers(Request $request, SluggerInterface $slugger) {
         $flowers = $this->em->getRepository(Flower::class)->findAll();
 
         $flower = new Flower();
@@ -40,6 +42,38 @@ class AdminController extends AbstractController {
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            // Обработка изображения
+            $imageFile = $form->get('image')->getData();
+
+            if ($imageFile) {
+                // Генерация уникального имени для файла
+                $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
+                $safeFilename = $slugger->slug($originalFilename);
+                $newFilename = uniqid() . '.' . $imageFile->guessExtension();
+
+                // Перемещение файла в директорию
+                try {
+                    $file = new File();
+                    $file->setName($newFilename);
+                    $file->setExtension($imageFile->guessExtension());
+                    $file->setStatus(1);
+
+                    $imageFile->move(
+                        $this->getParameter('images_directory'),
+                        $newFilename
+                    );
+
+                    // Сохранение файла
+                    $this->em->persist($file);
+                    $this->em->flush();
+
+                    // Связывание изображения с цветком
+                    $flower->setFileId($file->getId());
+                } catch (FileException $e) {
+                    // Обработка ошибок
+                }
+            }
 
             $this->em->persist($flower);
             $this->em->flush();
@@ -122,11 +156,14 @@ class AdminController extends AbstractController {
     {
         $flower = $this->em->getRepository(Flower::class)->find($id);
         $assortment = $this->em->getRepository(Storage::class)->findOneBy(['flower_id' => $id]);
+        $file = $this->em->getRepository(File::class)->find($flower->getFileId());
 
         if ($flower) {
             $this->em->remove($flower);
             $this->em->flush();
             $this->em->remove($assortment);
+            $this->em->flush();
+            $this->em->remove($file);
             $this->em->flush();
             $this->addFlash('success', 'Flower deleted successfully.');
         } else {

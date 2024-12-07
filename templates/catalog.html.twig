@@ -10,6 +10,11 @@
         <div class="catalog-item">
             <h2>{{ flower.name }}</h2>
             <p>{{ flower.description }}</p>
+            {% if flower.imagePath %}
+                <img src="{{ asset(flower.imagePath) }}" alt="{{ flower.name }}" class="flower-image">
+            {% else %}
+                <p>No image available</p>
+            {% endif %}
         </div>
     {% endfor %}
 </div>
