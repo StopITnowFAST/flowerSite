@@ -1,50 +1,53 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Your Cart{% endblock %}
-
 {% block body %}
 <h1>Your Cart</h1>
 
 {% if cartItems is empty %}
     <p>Your cart is empty.</p>
 {% else %}
-    <table>
-        <thead>
-            <tr>
-                <th>Flower</th>
-                <th>Price</th>
-                <th>Quantity</th>
-                <th>Total</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for item in cartItems %}
-                {% set flower = flowers|filter(f => f.id == item.flowerId)|first %}
-                <tr data-flower-id="{{ flower.id }}">
-                    <td>{{ flower.name }}</td>
-                    <td class="price">{{ flower.price }}</td>
-                    <td>
-                        <input 
-                            type="number" 
-                            class="quantity" 
-                            value="{{ item.amount }}" 
-                            min="1" 
-                            data-price="{{ flower.price }}" 
-                            data-id="{{ flower.id }}">
-                    </td>
-                    <td class="total">{{ (item.amount * flower.price)|number_format(2) }}</td>
-                    <td>
-                        <button class="remove-item-btn" data-id="{{ flower.id }}">Remove</button>
-                    </td>
+    <form action="{{ path('checkout') }}" method="post" id="checkoutForm">
+        <input type="hidden" name="order_id" value="{{ orderId }}">
+        <table>
+            <thead>
+                <tr>
+                    <th>Flower</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Total</th>
+                    <th>Actions</th>
                 </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    <div>
-        <strong>Grand Total: $<span id="grandTotal">0.00</span></strong>
-    </div>
-    <button id="checkoutButton" class="btn btn-primary">Checkout</button>
+            </thead>
+            <tbody>
+                {% for item in cartItems %}
+                    {% set flower = flowers|filter(f => f.id == item.flowerId)|first %}
+                    <tr data-flower-id="{{ flower.id }}">
+                        <td>{{ flower.name }}</td>
+                        <td class="price">{{ flower.price }}</td>
+                        <td>
+                            <input 
+                                type="number" 
+                                class="quantity" 
+                                name="items[{{ loop.index0 }}][amount]" 
+                                value="{{ item.amount }}" 
+                                min="1" 
+                                data-price="{{ flower.price }}" 
+                                data-id="{{ flower.id }}">
+                            <input type="hidden" name="items[{{ loop.index0 }}][flower_id]" value="{{ flower.id }}">
+                        </td>
+                        <td class="total">{{ (item.amount * flower.price)|number_format(2) }}</td>
+                        <td>
+                            <button type="button" class="remove-item-btn" data-id="{{ flower.id }}">Remove</button>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div>
+            <strong>Grand Total: $<span id="grandTotal">0.00</span></strong>
+        </div>
+        <button type="submit" class="btn btn-primary">Checkout</button>
+    </form>
 {% endif %}
 
 <a href="{{ path('catalog') }}" class="btn btn-secondary">Back to Catalog</a>
