@@ -15,7 +15,18 @@
             {% else %}
                 <p>No image available</p>
             {% endif %}
+            
+            <!-- Форма для добавления товара в корзину -->
+            <form action="{{ path('add_to_cart', {'id': flower.id}) }}" method="post">
+                <button type="submit" class="btn btn-primary">Add to Cart</button>
+            </form>
         </div>
     {% endfor %}
 </div>
+
+<!-- Кнопка для перехода в корзину -->
+<div class="cart-link">
+    <a href="{{ path('view_cart') }}" class="btn btn-secondary">Go to Cart</a>
+</div>
+
 {% endblock %}

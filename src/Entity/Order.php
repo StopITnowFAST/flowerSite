@@ -15,8 +15,8 @@ class Order
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column]
-    private ?int $order_id = null;
+    #[ORM\Column(length:255)]
+    private ?string $order_id = null;
 
     #[ORM\Column]
     private ?int $flower_id = null;
@@ -38,12 +38,12 @@ class Order
         return $this->id;
     }
 
-    public function getOrderId(): ?int
+    public function getOrderId(): ?string
     {
         return $this->order_id;
     }
 
-    public function setOrderId(int $order_id): static
+    public function setOrderId(string $order_id): static
     {
         $this->order_id = $order_id;
 
