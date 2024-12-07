@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Flower;
+use App\Entity\Order;
 use App\Form\FlowerFormType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Entity\User;
@@ -53,7 +54,17 @@ class AdminController extends AbstractController {
     // Страница просмотра заказов
     #[Route(path: '/admin/orders')] 
     function orders() {
-        return new Response('Success');
+        $orders = $this->em->getRepository(Order::class)->findAll();
+        $flowers = $this->em->getRepository(Flower::class)->findAll();
+        $flowerNames = [];
+        foreach ($flowers as $flower) {
+            $flowerNames[$flower->getId()] = $flower->getName();
+        }
+        
+        return $this->render('admin/orders.html.twig', [
+            'orders' => $orders,
+            'flowerNames' => $flowerNames,
+        ]);
     }
 
     // Страница редактирования склада
