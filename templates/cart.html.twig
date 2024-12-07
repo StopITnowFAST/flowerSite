@@ -11,7 +11,7 @@
     <ul>
         {% for item in cartItems %}
             {% set flower = flowers[item.id] %}
-            <li>{{ flower.name }} - Quantity: {{ item.amount }}</li>
+            <li>{{ flower.name }}</li>
         {% endfor %}
     </ul>
 {% endif %}

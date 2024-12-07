@@ -7,7 +7,8 @@
 <h2>Add New Flower</h2>
     {{ form_start(form) }}
         {{ form_row(form.name) }}
-        {{ form_row(form.description) }}
+        {{ form_row(form.description) }}        
+        {{ form_row(form.price) }}
         {{ form_row(form.image) }}
         <button class="btn">Save</button>
     {{ form_end(form) }}
@@ -22,6 +23,7 @@
             <th>ID</th>
             <th>Name</th>
             <th>Description</th>
+            <th>Price</th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -31,6 +33,7 @@
                 <td>{{ flower.id }}</td>
                 <td>{{ flower.name }}</td>
                 <td>{{ flower.description }}</td>
+                <td>{{ flower.price }}</td>
                 <td>
                     <form action="{{ path('flower_delete', {id: flower.id}) }}" method="post" onsubmit="return confirm('Are you sure you want to delete this flower?');">
                         <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ flower.id) }}">

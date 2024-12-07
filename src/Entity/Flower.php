@@ -21,6 +21,9 @@ class Flower
     private ?string $description = null;
 
     #[ORM\Column]
+    private ?int $price = null;
+
+    #[ORM\Column]
     private ?int $file_id = null;
 
     public function getId(): ?int
@@ -48,6 +51,18 @@ class Flower
     public function setDescription(?string $description): static
     {
         $this->description = $description;
+
+        return $this;
+    }
+
+    public function getPrice(): ?int
+    {
+        return $this->price;
+    }
+
+    public function setPrice(int $price): static
+    {
+        $this->price = $price;
 
         return $this;
     }
