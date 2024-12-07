@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Flower;
 use App\Entity\Storage;
 use App\Entity\Cart;
+use App\Entity\Order;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\Attribute\Route;
@@ -72,7 +73,6 @@ class CartController extends AbstractController
                 $cartItem = new Cart();
                 $cartItem->setCartId($sessionId);
                 $cartItem->setFlowerId($flower->getId());
-                $cartItem->setStatus(1);
             }
             $this->em->persist($cartItem);
             $this->em->flush();
@@ -87,8 +87,6 @@ class CartController extends AbstractController
         $cartId = strtoupper($request->request->get('cart_id'));
         $items = $request->request->all()['items'];
 
-        var_dump($items); die;
-
         if (!$items) {
             return new Response('No items in cart', 400);
         }
@@ -97,8 +95,15 @@ class CartController extends AbstractController
             $flowerId = $item['flower_id'];
             $amount = $item['amount'];
 
+            $order = new Order;
 
+            $order->setOrderId($cartId);
+            $order->setFlowerId($flowerId);
+            $order->setAmount($amount);
+            $order->setStatus(1);
 
+            $this->em->persist($order);
+            $this->em->flush();
         }
 
         return new Response('Checkout successful!');

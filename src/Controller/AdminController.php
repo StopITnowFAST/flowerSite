@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Flower;
 use App\Entity\Cart;
+use App\Entity\Order;
 use App\Entity\Storage;
 use App\Form\FlowerFormType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -94,24 +95,18 @@ class AdminController extends AbstractController {
         ]);
     }
 
-    // Страница редактирования карточек товара
-    #[Route(path: '/admin/cards')] 
-    function cards() {
-        return new Response('Success');
-    }
-
     // Страница просмотра заказов
-    #[Route(path: '/admin/carts', name: 'cart_list')] 
-    function carts() {
-        $carts = $this->em->getRepository(Cart::class)->findAll();
+    #[Route(path: '/admin/orders', name: 'order_list')] 
+    function orders() {
+        $orders = $this->em->getRepository(Order::class)->findAll();
         $flowers = $this->em->getRepository(Flower::class)->findAll();
         $flowerNames = [];
         foreach ($flowers as $flower) {
             $flowerNames[$flower->getId()] = $flower->getName();
         }
         
-        return $this->render('admin/carts.html.twig', [
-            'carts' => $carts,
+        return $this->render('admin/orders.html.twig', [
+            'orders' => $orders,
             'flowerNames' => $flowerNames,
         ]);
     }
