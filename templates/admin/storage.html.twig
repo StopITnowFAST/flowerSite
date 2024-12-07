@@ -1,30 +1,23 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-<h1>Storage</h1>
-
-{# Уведомления #}
-{% for message in app.flashes('success') %}
-    <div class="alert alert-success">
-        {{ message }}
-    </div>
-{% endfor %}
+<h1>Содержимое склада</h1>
 
 {# Форма добавления товара на склад #}
-<h2>Add to Storage</h2>
-{{ form_start(form) }}
-    {{ form_row(form.flowerId) }}
-    {{ form_row(form.amount) }}
-    <button type="submit" class="btn btn-primary">Add</button>
-{{ form_end(form) }}
+<h2>Добавить на склад</h2>
+    {{ form_start(form) }}
+        {{ form_row(form.flowerId, {'attr': {'class': 'form-select', 'placeholder': 'Выберите цветок'}}) }}
+        {{ form_row(form.amount, {'attr': {'class': 'form-control', 'placeholder': 'Количество'}}) }}
+        <button type="submit" class="btn btn-primary">Добавить</button>
+    {{ form_end(form) }}
 
 {# Таблица склада #}
 <table border="1" cellpadding="10">
     <thead>
         <tr>
             <th>ID</th>
-            <th>Flower</th>
-            <th>Available Amount</th>
+            <th>Название</th>
+            <th>Доступно</th>
         </tr>
     </thead>
     <tbody>
@@ -32,13 +25,13 @@
             <tr>
                 <td>{{ item.id }}</td>
                 <td>
-                    {{ flowerNames[item.flowerId] is defined ? flowerNames[item.flowerId] : 'Unknown Flower' }}
+                    {{ flowerNames[item.flowerId] is defined ? flowerNames[item.flowerId] : 'Неизвестно' }}
                 </td>
                 <td>{{ item.amount }}</td>
             </tr>
         {% else %}
             <tr>
-                <td colspan="3">No storage data available</td>
+                <td colspan="3">Склад пуст!</td>
             </tr>
         {% endfor %}
     </tbody>

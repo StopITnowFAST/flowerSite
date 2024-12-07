@@ -19,12 +19,12 @@ class FlowerFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('name', TextType::class)
-            ->add('description', TextareaType::class)            
+            ->add('name', TextType::class, ['label' => 'Название'])
+            ->add('description', TextareaType::class, ['label' => 'Описание'])            
             ->add('price', null, ['label' => 'Цена за штуку'])
             ->add('image', FileType::class, [
-                'label' => 'Image (JPEG, PNG files)',
-                'mapped' => false, // Это поле не будет связано напрямую с сущностью
+                'label' => 'Фотография',
+                'mapped' => false, 
                 'required' => false,
                 'constraints' => [
                     new File([

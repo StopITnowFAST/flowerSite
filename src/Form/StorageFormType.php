@@ -17,7 +17,7 @@ class StorageFormType extends AbstractType
                 'class' => \App\Entity\Flower::class, // Указываем сущность Flower
                 'choice_label' => 'name', // Используем поле name для отображения
                 'label' => 'Flower',
-                'placeholder' => 'Select a flower',
+                'placeholder' => 'Выберите позицию',
                 'mapped' => false,
             ])
             ->add('amount', null, [

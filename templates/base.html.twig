@@ -4,19 +4,17 @@
     <meta charset="UTF-8">
     <title>{% block title %}My Flower Shop{% endblock %}</title>
     <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
     <body>
     <!-- Хедер с меню -->
     <header>
-        <nav>
-            <ul>
-                <li><a href="{{ path('flower_list') }}">Flowers</a></li>
-                <li><a href="{{ path('storage_list') }}">Storage</a></li>
-                <li><a href="{{ path('order_list') }}">Orders</a></li>
-                <li><a href="{{ path('catalog') }}">Catalog</a></li>
-                <li><a href="{{ path('view_cart') }}">Cart</a></li>
-            </ul>
-        </nav>
+    {% if is_granted('ROLE_MASTER') %}
+        {% include 'headerAdmin.html.twig' %}
+    {% else %}
+        {% include 'headerUser.html.twig' %}
+    {% endif %}
     </header>
 
     <!-- Основной контент -->
@@ -26,7 +24,7 @@
 
     <!-- Футер -->
     <footer>
-        <p>&copy; 2024 My Flower Shop</p>
+        <p>&copy; 2024 Турклиев Владимир</p>
     </footer>
 
     {% block javascripts %}

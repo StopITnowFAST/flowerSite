@@ -1,30 +1,32 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-<h1>Flower Management</h1>
+<h1>Управление каталогом</h1>
 
 {# Отображение формы добавления цветков #}
-<h2>Add New Flower</h2>
+<h2>Добавление новой позиции</h2>
     {{ form_start(form) }}
-        {{ form_row(form.name) }}
-        {{ form_row(form.description) }}        
-        {{ form_row(form.price) }}
-        {{ form_row(form.image) }}
-        <button class="btn">Save</button>
+        {{ form_row(form.name, {'attr': {'class': 'form-control', 'placeholder': 'Название цветка'}}) }}
+        {{ form_row(form.description, {'attr': {'class': 'form-control', 'placeholder': 'Описание'}}) }}
+        {{ form_row(form.price, {'attr': {'class': 'form-control', 'placeholder': 'Цена'}}) }}
+        {{ form_row(form.image, {'attr': {'class': 'form-control', 'placeholder': 'Изображение'}}) }}
+        <button class="btn btn-success">Сохранить</button>
     {{ form_end(form) }}
+
+
 
 <hr>
 
 {# Таблица с цветками #}
-<h2>Flower List</h2>
+<h2>Вся продукция</h2>
 <table border="1" cellpadding="10">
     <thead>
         <tr>
             <th>ID</th>
-            <th>Name</th>
-            <th>Description</th>
-            <th>Price</th>
-            <th>Actions</th>
+            <th>Название</th>
+            <th>Описание</th>
+            <th>Цена за штуку</th>
+            <th>Действия</th>
         </tr>
     </thead>
     <tbody>
@@ -35,11 +37,14 @@
                 <td>{{ flower.description }}</td>
                 <td>{{ flower.price }}</td>
                 <td>
-                    <form action="{{ path('flower_delete', {id: flower.id}) }}" method="post" onsubmit="return confirm('Are you sure you want to delete this flower?');">
+                    <form action="{{ path('flower_delete', {id: flower.id}) }}" method="post" style="display: inline-block;">
                         <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ flower.id) }}">
-                        <button type="submit">Delete</button>
+                        <button class="btn btn-delete" type="submit">
+                            <i class="fa fa-trash"></i>
+                        </button>
                     </form>
                 </td>
+
             </tr>
         {% else %}
             <tr>

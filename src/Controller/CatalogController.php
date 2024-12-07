@@ -32,10 +32,8 @@ class CatalogController extends AbstractController {
 
     // Страница с цветами
     #[Route(path: '/', name: 'catalog')]
-    function catalog(Request $request)
+    function catalog()
     {
-        dump($request->getSession()->getId());   
-        
         // В контроллере
         $flowers = $this->em->getRepository(Flower::class)->findAll();
         foreach ($flowers as $flower) {

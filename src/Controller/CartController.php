@@ -24,7 +24,6 @@ class CartController extends AbstractController
     #[Route(path:"/cart", name:"view_cart")]
     function cart(Request $request, EntityManagerInterface $em): Response
     {
-        dump($request->getSession()->getId());   
         // Получение корзины пользователя
         $cartItems = $em->getRepository(Cart::class)->findBy(['cart_id' => $request->getSession()->getId()]);
 
@@ -60,7 +59,6 @@ class CartController extends AbstractController
     #[Route(path:"/add_to_cart/{id}", name:"add_to_cart")]
     public function addToCart($id, Request $request): RedirectResponse
     {
-        dump($request->getSession()->getId());   
         $flower = $this->em->getRepository(Flower::class)->find($id);
 
         if ($flower) {
