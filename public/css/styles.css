@@ -1,0 +1,67 @@
+header {
+    background-color: #e27272;
+    padding: 10px 0;
+    border-bottom: 1px solid #ddd;
+}
+
+nav ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+}
+
+nav ul li {
+    margin: 0 15px;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: #333;
+}
+
+main {
+    padding: 20px;
+}
+
+footer {
+    text-align: center;
+    padding: 10px 0;
+    border-top: 1px solid #ddd;
+    margin-top: 20px;
+    color: #888;
+}
+
+/* Стили для каталога */
+.catalog {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 колонки */
+    gap: 20px; /* Расстояние между карточками */
+    margin-top: 20px;
+}
+
+.catalog-item {
+    border: 1px solid #ddd;
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    background-color: #fff;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.catalog-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.catalog-item h2 {
+    margin: 0 0 10px;
+    font-size: 1.5em;
+}
+
+.catalog-item p {
+    font-size: 1em;
+    color: #666;
+}

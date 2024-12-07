@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Catalog{% endblock %}
+
+{% block body %}
+<h1>Catalog</h1>
+
+<div class="catalog">
+    {% for flower in flowers %}
+        <div class="catalog-item">
+            <h2>{{ flower.name }}</h2>
+            <p>{{ flower.description }}</p>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

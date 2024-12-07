@@ -20,6 +20,9 @@ class Flower
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
 
+    #[ORM\Column]
+    private ?int $file_id = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -45,6 +48,18 @@ class Flower
     public function setDescription(?string $description): static
     {
         $this->description = $description;
+
+        return $this;
+    }
+
+    public function getFileId(): ?int
+    {
+        return $this->file_id;
+    }
+
+    public function setFileId(int $file_id): static
+    {
+        $this->file_id = $file_id;
 
         return $this;
     }
