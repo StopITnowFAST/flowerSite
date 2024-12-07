@@ -7,7 +7,7 @@
     <p>Your cart is empty.</p>
 {% else %}
     <form action="{{ path('checkout') }}" method="post" id="checkoutForm">
-        <input type="hidden" name="order_id" value="{{ orderId }}">
+        <input type="hidden" name="cart_id" value="{{ cartId }}">
         <table>
             <thead>
                 <tr>
@@ -21,21 +21,32 @@
             <tbody>
                 {% for item in cartItems %}
                     {% set flower = flowers|filter(f => f.id == item.flowerId)|first %}
+                    {% set storage = storages|filter(s => s.flowerId == item.flowerId)|first %}
                     <tr data-flower-id="{{ flower.id }}">
                         <td>{{ flower.name }}</td>
                         <td class="price">{{ flower.price }}</td>
                         <td>
-                            <input 
-                                type="number" 
-                                class="quantity" 
-                                name="items[{{ loop.index0 }}][amount]" 
-                                value="{{ item.amount }}" 
-                                min="1" 
-                                data-price="{{ flower.price }}" 
-                                data-id="{{ flower.id }}">
-                            <input type="hidden" name="items[{{ loop.index0 }}][flower_id]" value="{{ flower.id }}">
+                            {% if storage and storage.amount > 0 %}
+                                <input 
+                                    type="number" 
+                                    class="quantity" 
+                                    name="items[{{ loop.index0 }}][amount]" 
+                                    min="1" 
+                                    max="{{ storage.amount }}" 
+                                    data-price="{{ flower.price }}" 
+                                    data-id="{{ flower.id }}">
+                                <input type="hidden" name="items[{{ loop.index0 }}][flower_id]" value="{{ flower.id }}">
+                                <p>Available: {{ storage.amount }}</p>
+                            {% else %}
+                                <input 
+                                    type="number" 
+                                    class="quantity" 
+                                    value="0" 
+                                    disabled>
+                                <p style="color: red;">Out of stock</p>
+                            {% endif %}
                         </td>
-                        <td class="total">{{ (item.amount * flower.price)|number_format(2) }}</td>
+                        <td class="total">{{ (1 * flower.price)|number_format(2) }}</td>
                         <td>
                             <button type="button" class="remove-item-btn" data-id="{{ flower.id }}">Remove</button>
                         </td>

@@ -3,7 +3,8 @@
 namespace App\Controller;
 
 use App\Entity\Flower;
-use App\Entity\Order;
+use App\Entity\Storage;
+use App\Entity\Cart;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\Attribute\Route;
@@ -20,16 +21,41 @@ class CartController extends AbstractController
     }
 
     #[Route(path:"/cart", name:"view_cart")]
-    public function viewCart(Request $request): Response {
-        $sessionId = $request->getSession()->getId();
-        $cartItems = $this->em->getRepository(Order::class)->findBy(['order_id' => $sessionId]);
-        $flowers = $this->em->getRepository(Flower::class)->findAll();
-        return $this->render('cart.html.twig', [
-            'cartItems' => $cartItems,
-            'flowers' => $flowers,
-            'orderId' => $sessionId,
-        ]);
+    function cart(Request $request, EntityManagerInterface $em): Response
+{
+    $sessionId = $request->getSession()->getId();
+
+    // Получение корзины пользователя
+    $cartItems = $em->getRepository(Cart::class)->findBy(['cart_id' => $sessionId]);
+
+    // Получение всех цветов
+    $flowerRepo = $em->getRepository(Flower::class);
+    $flowers = $flowerRepo->findAll();
+
+    // Индексация цветов по ID
+    $flowersById = [];
+    foreach ($flowers as $flower) {
+        $flowersById[$flower->getId()] = $flower;
     }
+
+    // Получение доступного количества на складе
+    $storageRepo = $em->getRepository(Storage::class);
+    $storages = $storageRepo->findAll();
+
+    // Индексация записи склада по flower_id
+    $storagesByFlowerId = [];
+    foreach ($storages as $storage) {
+        $storagesByFlowerId[$storage->getFlowerId()] = $storage;
+    }
+
+    return $this->render('cart.html.twig', [
+        'cartItems' => $cartItems,
+        'flowers' => $flowersById,
+        'storages' => $storagesByFlowerId,
+        'cartId' => $sessionId,
+    ]);
+}
+
 
     #[Route(path:"/add_to_cart/{id}", name:"add_to_cart")]
     public function addToCart($id, Request $request): RedirectResponse
@@ -38,15 +64,14 @@ class CartController extends AbstractController
 
         if ($flower) {
             $sessionId = $request->getSession()->getId();
-            $cartItem = $this->em->getRepository(Order::class)->findOneBy([
-                'order_id' => $sessionId,
+            $cartItem = $this->em->getRepository(Cart::class)->findOneBy([
+                'cart_id' => $sessionId,
                 'flower_id' => $flower->getId(),
             ]);
             if (!$cartItem) {
-                $cartItem = new Order();
-                $cartItem->setOrderId($sessionId);
+                $cartItem = new Cart();
+                $cartItem->setCartId($sessionId);
                 $cartItem->setFlowerId($flower->getId());
-                $cartItem->setAmount(0); 
                 $cartItem->setStatus(1);
             }
             $this->em->persist($cartItem);
@@ -56,33 +81,13 @@ class CartController extends AbstractController
         return $this->redirectToRoute('catalog');
     }
 
-    #[Route(path:"/remove_from_cart/{id}", name:"remove_from_cart")]
-    public function removeFromCart($id, Request $request): RedirectResponse
-    {
-        // Получаем уникальный идентификатор сессии
-        $sessionId = $request->getSession()->getId();
-
-        // Ищем товар в корзине
-        $cartItem = $this->em->getRepository(Order::class)->findOneBy([
-            'order_id' => $sessionId,
-            'flower_id' => $id,
-        ]);
-
-        if ($cartItem) {
-            // Удаляем товар из корзины
-            $this->em->remove($cartItem);
-            $this->em->flush();
-        }
-
-        // Перенаправляем обратно на страницу корзины
-        return $this->redirectToRoute('view_cart');
-    }
-
     #[Route(path:"/checkout", name:"checkout")]
     public function checkout(Request $request)
     {
-        $orderId = strtoupper($request->request->get('order_id'));
+        $cartId = strtoupper($request->request->get('cart_id'));
         $items = $request->request->all()['items'];
+
+        var_dump($items); die;
 
         if (!$items) {
             return new Response('No items in cart', 400);
@@ -92,7 +97,8 @@ class CartController extends AbstractController
             $flowerId = $item['flower_id'];
             $amount = $item['amount'];
 
-            
+
+
         }
 
         return new Response('Checkout successful!');
