@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<h1>Flower Management</h1>
+
+{# Отображение формы добавления цветков #}
+<h2>Add New Flower</h2>
+{{ form_start(form) }}
+    {{ form_row(form.name) }}
+    {{ form_row(form.description) }}    
+{{ form_end(form) }}
+
+<hr>
+
+{# Таблица с цветками #}
+<h2>Flower List</h2>
+<table border="1" cellpadding="10">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for flower in flowers %}
+            <tr>
+                <td>{{ flower.id }}</td>
+                <td>{{ flower.name }}</td>
+                <td>{{ flower.description }}</td>
+                <td>
+                    <form action="{{ path('flower_delete', {id: flower.id}) }}" method="post" onsubmit="return confirm('Are you sure you want to delete this flower?');">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ flower.id) }}">
+                        <button type="submit">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">No flowers found</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
